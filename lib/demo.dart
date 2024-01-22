@@ -6,75 +6,46 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Synchronized ListViews'),
+          title: Text('Text and Image Example'),
         ),
-        body: SynchronizedListViews(),
+        body: Center(
+          child: TextAndImageRow(),
+        ),
       ),
     );
   }
 }
 
-class SynchronizedListViews extends StatefulWidget {
-  @override
-  _SynchronizedListViewsState createState() => _SynchronizedListViewsState();
-}
-
-class _SynchronizedListViewsState extends State<SynchronizedListViews> {
-  // Create a ScrollController to control the scroll position
-  ScrollController _controller = ScrollController();
-
+class TextAndImageRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // First ListView
+        // Container for the image
         Container(
-          height: 70,
-          width: 150,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: _controller,
-            itemCount: 20,
-            itemBuilder: (context, index) {
-              return Container(
-                width: 70,
-                height: 70,
-                color: Colors.blue,
-                alignment: Alignment.center,
-                child: Text('Item $index'),
-              );
-            },
+          width: 50.0,
+          height: 50.0,
+          decoration: BoxDecoration(
+            color: Colors.blue, // Change the color as needed
+            borderRadius: BorderRadius.circular(8.0), // Adjust the border radius as needed
+          ),
+          // Add your image here, for example:
+          child: Icon(
+            Icons.image,
+            color: Colors.white, // Change the color as needed
           ),
         ),
-        // Spacer between ListViews
-        SizedBox(width: 10),
-        // Second ListView
-        Container(
-          height: 70,
-          width: 150,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: _controller,
-            itemCount: 20,
-            itemBuilder: (context, index) {
-              return Container(
-                width: 70,
-                height: 70,
-                color: Colors.green,
-                alignment: Alignment.center,
-                child: Text('Item $index'),
-              );
-            },
+        // Spacer between text and image
+        SizedBox(width: 10.0),
+        // Flexible widget for the text (max 3 lines)
+        Flexible(
+          child: Text(
+            'This is a multiline text. It can span up to 3 lines before it gets truncated. Adjust the content as needed.',
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    // Dispose the ScrollController when the widget is disposed
-    _controller.dispose();
-    super.dispose();
   }
 }

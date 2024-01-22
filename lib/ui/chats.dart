@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:untitled/model/conversations.dart';
 
+import '../components/channel_container.dart';
 import '../components/list_tile.dart';
 
 class Chats extends StatefulWidget {
@@ -198,15 +199,15 @@ class _ChatsState extends State<Chats> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 18.0,right: 15),
+                        return const Padding(
+                          padding: EdgeInsets.only(left: 18.0,right: 15),
                           child: Text('My status',style: TextStyle(color: Colors.white,fontSize: 12),),
                         );
                       } else {
                         // Normal avatar for the rest of the indices
                         return
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0,right: 7),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 12.0,right: 7),
                             child: Text('My status',style: TextStyle(color: Colors.white,fontSize: 12)),
                           );
                       }
@@ -216,6 +217,7 @@ class _ChatsState extends State<Chats> {
                 const Divider(
                   height: 2,
                 ),
+                const SizedBox(height: 6),
                 const ListTile(
                   leading: Text(
                     "Channels",
@@ -226,7 +228,33 @@ class _ChatsState extends State<Chats> {
                   ),
                   trailing: Icon(Icons.add_rounded,color: Colors.white,),
                 ),
-                const SizedBox(height: 10),
+                const ChannelContainer(),
+                const ChannelContainer(),
+                 ListTile(
+                  leading: const Text(
+                    "Find channels",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18),
+                  ),
+                  trailing: Container(
+                    // color: Colors.red,
+                    height: 30,
+                    width: 80,
+                    child: const Row(
+                      children: [
+                        Text(
+                          'See all',style: TextStyle(
+                          color: Color(0xFF00a884),fontSize: 13
+                        ),
+                        ),
+                        SizedBox(width: 6),
+                        Icon(Icons.arrow_forward_ios_rounded,color: Color(0xFF00a884)),
+                      ],
+                    ),
+                  ),
+                ),
 
               ],
             ),
