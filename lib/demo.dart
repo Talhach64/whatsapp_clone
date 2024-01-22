@@ -1,39 +1,80 @@
 import 'package:flutter/material.dart';
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('ListView.separated Example'),
+          title: Text('Synchronized ListViews'),
         ),
-        body: MyListView(),
+        body: SynchronizedListViews(),
       ),
     );
   }
 }
 
-class MyListView extends StatelessWidget {
+class SynchronizedListViews extends StatefulWidget {
+  @override
+  _SynchronizedListViewsState createState() => _SynchronizedListViewsState();
+}
+
+class _SynchronizedListViewsState extends State<SynchronizedListViews> {
+  // Create a ScrollController to control the scroll position
+  ScrollController _controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 10, // Number of items in the list
-      itemBuilder: (BuildContext context, int index) {
-        // Builder for each item
-        return ListTile(
-          title: Text('Item $index'),
-          tileColor: index % 2 == 0 ? Colors.lightBlue : Colors.grey,
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        // Builder for each separator
-        return Container(
-          height: 2.0,
-
-        );
-      },
+    return Row(
+      children: [
+        // First ListView
+        Container(
+          height: 70,
+          width: 150,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            controller: _controller,
+            itemCount: 20,
+            itemBuilder: (context, index) {
+              return Container(
+                width: 70,
+                height: 70,
+                color: Colors.blue,
+                alignment: Alignment.center,
+                child: Text('Item $index'),
+              );
+            },
+          ),
+        ),
+        // Spacer between ListViews
+        SizedBox(width: 10),
+        // Second ListView
+        Container(
+          height: 70,
+          width: 150,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            controller: _controller,
+            itemCount: 20,
+            itemBuilder: (context, index) {
+              return Container(
+                width: 70,
+                height: 70,
+                color: Colors.green,
+                alignment: Alignment.center,
+                child: Text('Item $index'),
+              );
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    // Dispose the ScrollController when the widget is disposed
+    _controller.dispose();
+    super.dispose();
   }
 }

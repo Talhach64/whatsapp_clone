@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 
 class CustomListItem {
   final String title;
@@ -6,6 +5,9 @@ class CustomListItem {
   final String time;
   final String count;
   final String url;
+  final num dash;
+  final double space;
+
 
   CustomListItem({
 
@@ -13,6 +15,9 @@ class CustomListItem {
     required this.subtitle,
     required this.time,
     required this.count,
-    required this.url
+    required this.url,
+    required this.dash,
+    required this.space
+
   });
 }
