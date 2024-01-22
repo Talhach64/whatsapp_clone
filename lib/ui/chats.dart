@@ -8,6 +8,7 @@ import 'package:untitled/model/conversations.dart';
 
 import '../components/channel_container.dart';
 import '../components/list_tile.dart';
+import '../components/new_channel_container.dart';
 
 class Chats extends StatefulWidget {
   const Chats({super.key});
@@ -31,7 +32,8 @@ class _ChatsState extends State<Chats> {
     if (_controller1.position.userScrollDirection == ScrollDirection.forward ||
         _controller1.position.userScrollDirection == ScrollDirection.reverse) {
       _controller2.jumpTo(_controller1.position.pixels);
-    } else if (_controller2.position.userScrollDirection == ScrollDirection.forward ||
+    } else if (_controller2.position.userScrollDirection ==
+            ScrollDirection.forward ||
         _controller2.position.userScrollDirection == ScrollDirection.reverse) {
       _controller1.jumpTo(_controller2.position.pixels);
     }
@@ -43,6 +45,7 @@ class _ChatsState extends State<Chats> {
     _controller2.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -105,166 +108,195 @@ class _ChatsState extends State<Chats> {
                 Tab(text: "Calls"),
               ]),
         ),
-        body: TabBarView(
-          children: [
-            const Center(
-                child: Text('Content for Tab 1',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ListView.builder(
-                  itemCount: listData.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // Build and return the widget for the given index
-                    return ListTileHome(
-                      url: listData[index].url,
-                      label: listData[index].title,
-                      subLabel: listData[index].subtitle,
-                      time: listData[index].time,
-                      count: listData[index].count,
-                    );
-                  }),
-            ),
-            Column(
+        body: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height - 40),
+            child: TabBarView(
               children: [
-                const SizedBox(height: 10),
-                ListTile(
-                  leading: const Text(
-                    "Status",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: SvgPicture.asset('asset/svg/Group 42.svg'),
-                  ),
-                ),
-                SizedBox(
-                  height: 60,
+                const Center(
+                    child: Text('Content for Tab 1',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListView.builder(
-                    itemCount: listData.length,
-                    controller: _controller1,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return Stack(children: [
-                          CircleAvatar(
-                            radius: 45,
-                            foregroundImage: NetworkImage(listData[index].url),
-                          ),
-                          const Positioned(
-                              bottom: 0,
-                              right: 10,
-                              child: CircleAvatar(
-                                backgroundColor: Color(0xFF00a884),
-                                radius: 12,
-                                child: Center(
-                                    child: Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.white,
-                                )),
-                              ))
-                        ]);
-                      } else {
-                        // Normal avatar for the rest of the indices
-                        return DottedBorder(
-                          color: const Color(0xFF00a884),
-                          borderType: BorderType.Circle,
-                          radius: const Radius.circular(27),
-                          dashPattern: [
-                            (2 * pi * 27) / listData[index].dash,
-                            listData[index].space
-                          ],
-                          strokeWidth: 3,
-                          child: CircleAvatar(
-                            radius: 35,
-                            foregroundImage: NetworkImage(listData[index].url),
-                          ),
+                      itemCount: listData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        // Build and return the widget for the given index
+                        return ListTileHome(
+                          url: listData[index].url,
+                          label: listData[index].title,
+                          subLabel: listData[index].subtitle,
+                          time: listData[index].time,
+                          count: listData[index].count,
                         );
-                      }
-                    },
-                  ),
+                      }),
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 30,
-                  child: ListView.builder(
-                    controller: _controller2,
-                    itemCount: listData.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return const Padding(
-                          padding: EdgeInsets.only(left: 18.0,right: 15),
-                          child: Text('My status',style: TextStyle(color: Colors.white,fontSize: 12),),
-                        );
-                      } else {
-                        // Normal avatar for the rest of the indices
-                        return
-                          const Padding(
-                            padding: EdgeInsets.only(left: 12.0,right: 7),
-                            child: Text('My status',style: TextStyle(color: Colors.white,fontSize: 12)),
-                          );
-                      }
-                    },
-                  ),
-                ),
-                const Divider(
-                  height: 2,
-                ),
-                const SizedBox(height: 6),
-                const ListTile(
-                  leading: Text(
-                    "Channels",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  trailing: Icon(Icons.add_rounded,color: Colors.white,),
-                ),
-                const ChannelContainer(),
-                const ChannelContainer(),
-                 ListTile(
-                  leading: const Text(
-                    "Find channels",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  trailing: Container(
-                    // color: Colors.red,
-                    height: 30,
-                    width: 80,
-                    child: const Row(
-                      children: [
-                        Text(
-                          'See all',style: TextStyle(
-                          color: Color(0xFF00a884),fontSize: 13
-                        ),
-                        ),
-                        SizedBox(width: 6),
-                        Icon(Icons.arrow_forward_ios_rounded,color: Color(0xFF00a884)),
-                      ],
+                Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    ListTile(
+                      leading: const Text(
+                        "Status",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: SvgPicture.asset('asset/svg/Group 42.svg'),
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 60,
+                      child: ListView.builder(
+                        itemCount: listData.length,
+                        controller: _controller1,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == 0) {
+                            return Stack(children: [
+                              CircleAvatar(
+                                radius: 45,
+                                foregroundImage: NetworkImage(listData[index].url),
+                              ),
+                              const Positioned(
+                                  bottom: 0,
+                                  right: 10,
+                                  child: CircleAvatar(
+                                    backgroundColor: Color(0xFF00a884),
+                                    radius: 12,
+                                    child: Center(
+                                        child: Icon(
+                                      Icons.add_rounded,
+                                      color: Colors.white,
+                                    )),
+                                  ))
+                            ]);
+                          } else {
+                            // Normal avatar for the rest of the indices
+                            return DottedBorder(
+                              color: const Color(0xFF00a884),
+                              borderType: BorderType.Circle,
+                              radius: const Radius.circular(27),
+                              dashPattern: [
+                                (2 * pi * 27) / listData[index].dash,
+                                listData[index].space
+                              ],
+                              strokeWidth: 3,
+                              child: CircleAvatar(
+                                radius: 35,
+                                foregroundImage: NetworkImage(listData[index].url),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 30,
+                      child: ListView.builder(
+                        controller: _controller2,
+                        itemCount: listData.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == 0) {
+                            return const Padding(
+                              padding: EdgeInsets.only(left: 18.0, right: 15),
+                              child: Text(
+                                'My status',
+                                style: TextStyle(color: Colors.white, fontSize: 12),
+                              ),
+                            );
+                          } else {
+                            // Normal avatar for the rest of the indices
+                            return const Padding(
+                              padding: EdgeInsets.only(left: 12.0, right: 7),
+                              child: Text('My status',
+                                  style:
+                                      TextStyle(color: Colors.white, fontSize: 12)),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    const Divider(
+                      height: 2,
+                    ),
+                    const SizedBox(height: 6),
+                    const ListTile(
+                      leading: Text(
+                        "Channels",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                      trailing: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const ChannelContainer(),
+                    const ChannelContainer(),
+                    ListTile(
+                      leading: const Text(
+                        "Find channels",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                      trailing: Container(
+                        // color: Colors.red,
+                        height: 30,
+                        width: 80,
+                        child: const Row(
+                          children: [
+                            Text(
+                              'See all',
+                              style:
+                                  TextStyle(color: Color(0xFF00a884), fontSize: 13),
+                            ),
+                            SizedBox(width: 6),
+                            Icon(Icons.arrow_forward_ios_rounded,
+                                color: Color(0xFF00a884)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: SizedBox(
+                        height: 140,
+                        width: double.infinity,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, i){
+                              return NewChannelContainer();
+                            },
+                            separatorBuilder: (ctx, i){
+                              return SizedBox(width: 10);
+                            },
+                            itemCount: 10),
+                      ),
+                    )
+                  ],
                 ),
-
+                const Center(
+                    child: Text('Content for Tab 4',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white))),
               ],
             ),
-            const Center(
-                child: Text('Content for Tab 4',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-          ],
+          ),
         ),
       ),
     );
