@@ -4,20 +4,21 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:untitled/components/calls_list_tile.dart';
 import 'package:untitled/model/conversations.dart';
 
 import '../components/channel_container.dart';
 import '../components/list_tile.dart';
 import '../components/new_channel_container.dart';
 
-class Chats extends StatefulWidget {
-  const Chats({super.key});
+class ChatThread extends StatefulWidget {
+  const ChatThread({super.key});
 
   @override
-  State<Chats> createState() => _ChatsState();
+  State<ChatThread> createState() => _ChatThreadState();
 }
 
-class _ChatsState extends State<Chats> {
+class _ChatThreadState extends State<ChatThread> {
   ScrollController _controller1 = ScrollController();
   ScrollController _controller2 = ScrollController();
 
@@ -110,7 +111,10 @@ class _ChatsState extends State<Chats> {
         ),
         body: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height - 40),
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height -
+                    AppBar().preferredSize.height -
+                    40),
             child: TabBarView(
               children: [
                 const Center(
@@ -161,7 +165,8 @@ class _ChatsState extends State<Chats> {
                             return Stack(children: [
                               CircleAvatar(
                                 radius: 45,
-                                foregroundImage: NetworkImage(listData[index].url),
+                                foregroundImage:
+                                    NetworkImage(listData[index].url),
                               ),
                               const Positioned(
                                   bottom: 0,
@@ -189,7 +194,8 @@ class _ChatsState extends State<Chats> {
                               strokeWidth: 3,
                               child: CircleAvatar(
                                 radius: 35,
-                                foregroundImage: NetworkImage(listData[index].url),
+                                foregroundImage:
+                                    NetworkImage(listData[index].url),
                               ),
                             );
                           }
@@ -209,7 +215,8 @@ class _ChatsState extends State<Chats> {
                               padding: EdgeInsets.only(left: 18.0, right: 15),
                               child: Text(
                                 'My status',
-                                style: TextStyle(color: Colors.white, fontSize: 12),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
                               ),
                             );
                           } else {
@@ -217,8 +224,8 @@ class _ChatsState extends State<Chats> {
                             return const Padding(
                               padding: EdgeInsets.only(left: 12.0, right: 7),
                               child: Text('My status',
-                                  style:
-                                      TextStyle(color: Colors.white, fontSize: 12)),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12)),
                             );
                           }
                         },
@@ -259,8 +266,8 @@ class _ChatsState extends State<Chats> {
                           children: [
                             Text(
                               'See all',
-                              style:
-                                  TextStyle(color: Color(0xFF00a884), fontSize: 13),
+                              style: TextStyle(
+                                  color: Color(0xFF00a884), fontSize: 13),
                             ),
                             SizedBox(width: 6),
                             Icon(Icons.arrow_forward_ios_rounded,
@@ -269,31 +276,49 @@ class _ChatsState extends State<Chats> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: SizedBox(
                         height: 140,
                         width: double.infinity,
                         child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, i){
-                              return NewChannelContainer();
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, i) {
+                              return const NewChannelContainer();
                             },
-                            separatorBuilder: (ctx, i){
-                              return SizedBox(width: 10);
+                            separatorBuilder: (ctx, i) {
+                              return const SizedBox(width: 10);
                             },
                             itemCount: 10),
                       ),
                     )
                   ],
                 ),
-                const Center(
-                    child: Text('Content for Tab 4',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white))),
+                ListView.builder(
+                    itemCount: listData.length,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return const CreateCallLink();
+                      } else {
+                        return CallsListTile(
+                          image: NetworkImage(listData[index - 1].url),
+                          label: listData[index - 1].title,
+                          subLabel: 'Yesterday, ${listData[index - 1].time}',
+                          icon: listData[index - 1].call
+                              ? const Icon(
+                                  Icons.call_received_outlined,
+                                  color: Colors.green,
+                                  size: 18,
+                                )
+                              : const Icon(
+                                  Icons.call_made_outlined,
+                                  color: Colors.red,
+                                  size: 18,
+                                ),
+                        );
+                      }
+                    }),
               ],
             ),
           ),
@@ -308,6 +333,7 @@ class _ChatsState extends State<Chats> {
         subtitle: 'Announcement Mid Journey',
         time: '2:15 am',
         count: '2',
+        call: true,
         dash: 3,
         space: 4.5,
         url:
@@ -315,6 +341,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Abdullah',
         subtitle: 'Hello how are you',
+        call: true,
         time: '10:10 am',
         dash: 1,
         space: 0,
@@ -325,6 +352,7 @@ class _ChatsState extends State<Chats> {
         title: 'Ali Raza',
         subtitle: "We will manage,you don't worry",
         time: '7:45 am',
+        call: true,
         count: '7',
         dash: 5,
         space: 2.5,
@@ -334,6 +362,7 @@ class _ChatsState extends State<Chats> {
         title: 'Rashid Saleem',
         subtitle: 'Yes i have it',
         time: '11:11 pm',
+        call: false,
         count: '12',
         dash: 2,
         space: 3.5,
@@ -343,6 +372,7 @@ class _ChatsState extends State<Chats> {
         title: 'Afzal Azeem',
         subtitle: 'Lorem ipsum',
         time: '1:10 am',
+        call: false,
         count: '10',
         dash: 4,
         space: 3,
@@ -351,6 +381,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Noman Sarwar',
         subtitle: 'Do it please',
+        call: true,
         time: '8:30 am',
         count: '99',
         dash: 1,
@@ -362,6 +393,7 @@ class _ChatsState extends State<Chats> {
         subtitle: 'Announcement Mid Journey',
         time: '2:15 am',
         count: '2',
+        call: true,
         dash: 3,
         space: 4.5,
         url:
@@ -369,6 +401,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Abdullah',
         subtitle: 'Hello how are you',
+        call: true,
         time: '10:10 am',
         dash: 1,
         space: 0,
@@ -379,6 +412,7 @@ class _ChatsState extends State<Chats> {
         title: 'Ali Raza',
         subtitle: "We will manage,you don't worry",
         time: '7:45 am',
+        call: true,
         count: '7',
         dash: 5,
         space: 2.5,
@@ -388,6 +422,7 @@ class _ChatsState extends State<Chats> {
         title: 'Rashid Saleem',
         subtitle: 'Yes i have it',
         time: '11:11 pm',
+        call: false,
         count: '12',
         dash: 2,
         space: 3.5,
@@ -397,6 +432,7 @@ class _ChatsState extends State<Chats> {
         title: 'Afzal Azeem',
         subtitle: 'Lorem ipsum',
         time: '1:10 am',
+        call: false,
         count: '10',
         dash: 4,
         space: 3,
@@ -405,6 +441,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Noman Sarwar',
         subtitle: 'Do it please',
+        call: true,
         time: '8:30 am',
         count: '99',
         dash: 1,
@@ -416,6 +453,7 @@ class _ChatsState extends State<Chats> {
         subtitle: 'Announcement Mid Journey',
         time: '2:15 am',
         count: '2',
+        call: true,
         dash: 3,
         space: 4.5,
         url:
@@ -423,6 +461,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Abdullah',
         subtitle: 'Hello how are you',
+        call: true,
         time: '10:10 am',
         dash: 1,
         space: 0,
@@ -433,6 +472,7 @@ class _ChatsState extends State<Chats> {
         title: 'Ali Raza',
         subtitle: "We will manage,you don't worry",
         time: '7:45 am',
+        call: true,
         count: '7',
         dash: 5,
         space: 2.5,
@@ -442,6 +482,7 @@ class _ChatsState extends State<Chats> {
         title: 'Rashid Saleem',
         subtitle: 'Yes i have it',
         time: '11:11 pm',
+        call: false,
         count: '12',
         dash: 2,
         space: 3.5,
@@ -451,6 +492,7 @@ class _ChatsState extends State<Chats> {
         title: 'Afzal Azeem',
         subtitle: 'Lorem ipsum',
         time: '1:10 am',
+        call: false,
         count: '10',
         dash: 4,
         space: 3,
@@ -459,60 +501,7 @@ class _ChatsState extends State<Chats> {
     CustomListItem(
         title: 'Noman Sarwar',
         subtitle: 'Do it please',
-        time: '8:30 am',
-        count: '99',
-        dash: 1,
-        space: 0,
-        url:
-            'https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-    CustomListItem(
-        title: 'Talha Arshad',
-        subtitle: 'Announcement Mid Journey',
-        time: '2:15 am',
-        count: '2',
-        dash: 3,
-        space: 4.5,
-        url:
-            'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-    CustomListItem(
-        title: 'Abdullah',
-        subtitle: 'Hello how are you',
-        time: '10:10 am',
-        dash: 1,
-        space: 0,
-        count: '4',
-        url:
-            'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-    CustomListItem(
-        title: 'Ali Raza',
-        subtitle: "We will manage,you don't worry",
-        time: '7:45 am',
-        count: '7',
-        dash: 5,
-        space: 2.5,
-        url:
-            'https://images.pexels.com/photos/1310522/pexels-photo-1310522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-    CustomListItem(
-        title: 'Rashid Saleem',
-        subtitle: 'Yes i have it',
-        time: '11:11 pm',
-        count: '12',
-        dash: 2,
-        space: 3.5,
-        url:
-            'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=600'),
-    CustomListItem(
-        title: 'Afzal Azeem',
-        subtitle: 'Lorem ipsum',
-        time: '1:10 am',
-        count: '10',
-        dash: 4,
-        space: 3,
-        url:
-            'https://images.pexels.com/photos/34534/people-peoples-homeless-male.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-    CustomListItem(
-        title: 'Noman Sarwar',
-        subtitle: 'Do it please',
+        call: true,
         time: '8:30 am',
         count: '99',
         dash: 1,
