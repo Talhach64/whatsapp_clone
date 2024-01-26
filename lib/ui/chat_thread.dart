@@ -4,12 +4,21 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:untitled/components/calls_list_tile.dart';
 import 'package:untitled/model/conversations.dart';
 
 import '../components/channel_container.dart';
 import '../components/list_tile.dart';
 import '../components/new_channel_container.dart';
+
+class TabControllerGetX extends GetxController {
+  var currentIndex = 0.obs;
+
+  void changeTabIndex(int index) {
+    currentIndex.value = index;
+  }
+}
 
 class ChatThread extends StatefulWidget {
   const ChatThread({super.key});
@@ -19,6 +28,7 @@ class ChatThread extends StatefulWidget {
 }
 
 class _ChatThreadState extends State<ChatThread> {
+  final TabControllerGetX tabController = Get.put(TabControllerGetX());
   ScrollController _controller1 = ScrollController();
   ScrollController _controller2 = ScrollController();
 
@@ -53,6 +63,7 @@ class _ChatThreadState extends State<ChatThread> {
       initialIndex: 0,
       length: 4,
       child: Scaffold(
+        floatingActionButton:FloatingButton(),
         backgroundColor: const Color(0xFF121b22),
         appBar: AppBar(
           title: const Text(
@@ -70,7 +81,11 @@ class _ChatThreadState extends State<ChatThread> {
             const SizedBox(width: 15),
           ],
           iconTheme: const IconThemeData(color: Colors.white),
-          bottom: const TabBar(
+          bottom:  TabBar(
+              onTap: (index) {
+                // Use GetController to update the tab index
+                tabController.changeTabIndex(index);
+              },
               labelStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
@@ -118,11 +133,14 @@ class _ChatThreadState extends State<ChatThread> {
             child: TabBarView(
               children: [
                 const Center(
-                    child: Text('Content for Tab 1',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white))),
+                  child: Text(
+                    'Content for Tab 1',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListView.builder(
@@ -231,9 +249,7 @@ class _ChatThreadState extends State<ChatThread> {
                         },
                       ),
                     ),
-                    const Divider(
-                      height: 2,
-                    ),
+                    const Divider(height: 2),
                     const SizedBox(height: 6),
                     const ListTile(
                       leading: Text(
@@ -270,8 +286,10 @@ class _ChatThreadState extends State<ChatThread> {
                                   color: Color(0xFF00a884), fontSize: 13),
                             ),
                             SizedBox(width: 6),
-                            Icon(Icons.arrow_forward_ios_rounded,
-                                color: Color(0xFF00a884)),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: Color(0xFF00a884),
+                            ),
                           ],
                         ),
                       ),
@@ -292,33 +310,34 @@ class _ChatThreadState extends State<ChatThread> {
                             },
                             itemCount: 10),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 ListView.builder(
-                    itemCount: listData.length,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return const CreateCallLink();
-                      } else {
-                        return CallsListTile(
-                          image: NetworkImage(listData[index - 1].url),
-                          label: listData[index - 1].title,
-                          subLabel: 'Yesterday, ${listData[index - 1].time}',
-                          icon: listData[index - 1].call
-                              ? const Icon(
-                                  Icons.call_received_outlined,
-                                  color: Colors.green,
-                                  size: 18,
-                                )
-                              : const Icon(
-                                  Icons.call_made_outlined,
-                                  color: Colors.red,
-                                  size: 18,
-                                ),
-                        );
-                      }
-                    }),
+                  itemCount: listData.length,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return const CreateCallLink();
+                    } else {
+                      return CallsListTile(
+                        image: NetworkImage(listData[index - 1].url),
+                        label: listData[index - 1].title,
+                        subLabel: 'Yesterday, ${listData[index - 1].time}',
+                        icon: listData[index - 1].call
+                            ? const Icon(
+                                Icons.call_received_outlined,
+                                color: Colors.green,
+                                size: 18,
+                              )
+                            : const Icon(
+                                Icons.call_made_outlined,
+                                color: Colors.red,
+                                size: 18,
+                              ),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -509,4 +528,85 @@ class _ChatThreadState extends State<ChatThread> {
         url:
             'https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
   ];
+}
+
+class FloatingButton extends StatelessWidget {
+  final TabControllerGetX tabController = Get.find();
+  final onTap;
+
+   FloatingButton({super.key, this.onTap});
+
+
+    @override
+    Widget build(BuildContext context) {
+      return Obx(() {
+        return FloatingActionButton(
+          onPressed: onTap,
+          // child: Icon(Icons.ac_unit),
+          child: _getIcon(context),
+        );
+      });
+    }
+
+
+  Widget _getIcon(BuildContext context) {
+
+    switch (tabController.currentIndex.value) {
+      case 0:
+        return const SizedBox();
+      case 1:
+        return Container(
+          height: 52,
+          width: 52,
+          decoration: BoxDecoration(
+            color: const Color(0xFF00a884),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: const Icon(
+            Icons.message_rounded,
+          ),
+        );
+      case 2:
+        return Column(
+          children: [
+            Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFF3c4a55),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.edit,
+                color: Color(0xFFd3d7da),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Container(
+              height: 52,
+              width: 52,
+              decoration: BoxDecoration(
+                color: const Color(0xFF00a884),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Icon(
+                Icons.camera_alt_rounded,
+              ),
+            ),
+          ],
+        );
+      default:
+        return Container(
+          height: 52,
+          width: 52,
+          decoration: BoxDecoration(
+            color: const Color(0xFF00a884),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: const Icon(
+            Icons.add_ic_call_rounded,
+          ),
+        );
+    }
+  }
 }
