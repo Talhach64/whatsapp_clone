@@ -9,12 +9,12 @@ class NewChannelContainer extends StatelessWidget {
       height: 140,
       width: 110,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),border: Border.all(width: 1,color: Color(0xFF1a232a))),
-      child:  Column(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(width: 1, color: const Color(0xFF1a232a))),
+      child: Column(
         children: [
-          SizedBox(height: 10),
-
-          Stack(children: [
+          const SizedBox(height: 10),
+          const Stack(children: [
             CircleAvatar(
               radius: 30,
               foregroundImage: NetworkImage(
@@ -33,24 +33,28 @@ class NewChannelContainer extends StatelessWidget {
                   )),
                 ))
           ]),
-          SizedBox(height: 7),
-          Text(
+          const SizedBox(height: 7),
+          const Text(
             'WhatsApp',
-            style: TextStyle(color: Colors.white, fontSize: 12,fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 7),
-
+          const SizedBox(height: 7),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Container(
               width: double.infinity,
               height: 22,
               decoration: BoxDecoration(
-                  color: Color(0xFF0e3031), borderRadius: BorderRadius.circular(15)),
-              child:   Center(
+                  color: const Color(0xFF0e3031),
+                  borderRadius: BorderRadius.circular(15)),
+              child: const Center(
                 child: Text(
                   'Follow',
-                  style: TextStyle(color: Color(0xFFcff4e7), fontSize: 12,fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Color(0xFFcff4e7),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

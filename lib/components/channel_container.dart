@@ -8,7 +8,7 @@ class ChannelContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: Row(

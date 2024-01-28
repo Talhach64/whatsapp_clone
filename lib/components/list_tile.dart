@@ -20,7 +20,8 @@ class ListTileHome extends StatelessWidget {
       ),
       title: Text(
         label,
-        style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+        style:
+            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       subtitle: Text(subLabel,
           style: const TextStyle(

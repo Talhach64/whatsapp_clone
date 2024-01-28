@@ -26,7 +26,7 @@ class CreateCallLink extends StatelessWidget {
           ),
         ),
         const Padding(
-          padding: EdgeInsets.only(left: 20.0, top: 8,bottom: 8),
+          padding: EdgeInsets.only(left: 20.0, top: 8, bottom: 8),
           child: Text(
             'Recent',
             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -60,7 +60,8 @@ class CallsListTile extends StatelessWidget {
         ),
         title: Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         subtitle: Row(
           children: [

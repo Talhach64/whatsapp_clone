@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/ui/chat_thread.dart';
-
-import 'demo.dart';
+import 'test_example_code.dart';
 
 void main() {
-  runApp( MaterialApp(home: ChatThread()));
+  runApp(
+    GetMaterialApp(
+      initialRoute: '/ChatThread',
+      getPages: [
+        GetPage(name: '/ChatThread', page: () => const ChatThread()),
+        GetPage(name: '/Demo', page: () => const Demo()),
+      ],
+    ),
+  );
 }

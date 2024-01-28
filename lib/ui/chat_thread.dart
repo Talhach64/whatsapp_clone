@@ -11,32 +11,27 @@ import 'package:untitled/model/conversations.dart';
 import '../components/channel_container.dart';
 import '../components/list_tile.dart';
 import '../components/new_channel_container.dart';
+import '../test_example_code.dart';
 
-class TabControllerGetX extends GetxController {
-  var currentIndex = 0.obs;
+class MyController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  RxInt currentIndex = 0.obs;
 
-  void changeTabIndex(int index) {
-    currentIndex.value = index;
+  late TabController tabController;
+  final ScrollController _controller1 = ScrollController();
+  final ScrollController _controller2 = ScrollController();
+
+  setIndex() {
+    currentIndex.value = tabController.index;
   }
-}
-
-class ChatThread extends StatefulWidget {
-  const ChatThread({super.key});
 
   @override
-  State<ChatThread> createState() => _ChatThreadState();
-}
-
-class _ChatThreadState extends State<ChatThread> {
-  final TabControllerGetX tabController = Get.put(TabControllerGetX());
-  ScrollController _controller1 = ScrollController();
-  ScrollController _controller2 = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
+  void onInit() {
+    tabController = TabController(length: 4, vsync: this);
+    tabController.addListener(setIndex);
     _controller1.addListener(_scrollListener);
     _controller2.addListener(_scrollListener);
+    super.onInit();
   }
 
   void _scrollListener() {
@@ -49,11 +44,86 @@ class _ChatThreadState extends State<ChatThread> {
       _controller1.jumpTo(_controller2.position.pixels);
     }
   }
+}
+
+class ChatThread extends StatefulWidget {
+  const ChatThread({super.key});
+
+  @override
+  State<ChatThread> createState() => _ChatThreadState();
+}
+
+class _ChatThreadState extends State<ChatThread> with TickerProviderStateMixin {
+  MyController gController = Get.put(MyController());
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget _getFloatingButton() {
+    if (gController.currentIndex.value == 1) {
+      return Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color(0xFF00a884),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Icon(
+          Icons.message_rounded,
+        ),
+      );
+    } else if (gController.currentIndex.value == 2) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3c4a55),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.edit,
+              color: Color(0xFFd3d7da),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: const Color(0xFF00a884),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(
+              Icons.camera_alt_rounded,
+            ),
+          ),
+        ],
+      );
+    } else if (gController.currentIndex.value == 3) {
+      return Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color(0xFF00a884),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Icon(
+          Icons.phone,
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
 
   @override
   void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
+    print("disposed called()");
     super.dispose();
   }
 
@@ -63,13 +133,18 @@ class _ChatThreadState extends State<ChatThread> {
       initialIndex: 0,
       length: 4,
       child: Scaffold(
-        floatingActionButton:FloatingButton(),
+        floatingActionButton: Obx(() => _getFloatingButton()),
         backgroundColor: const Color(0xFF121b22),
         appBar: AppBar(
-          title: const Text(
-            'WhatsApp',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          title: GestureDetector(
+            onTap: () => Get.to(() => const Demo()),
+            child: const Text(
+              'WhatsApp',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
           ),
           backgroundColor: const Color(0xFF1f2c34),
           actions: [
@@ -81,43 +156,43 @@ class _ChatThreadState extends State<ChatThread> {
             const SizedBox(width: 15),
           ],
           iconTheme: const IconThemeData(color: Colors.white),
-          bottom:  TabBar(
-              onTap: (index) {
-                // Use GetController to update the tab index
-                tabController.changeTabIndex(index);
-              },
-              labelStyle: TextStyle(
+          bottom: TabBar(
+              controller: gController.tabController,
+              labelStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
                   color: Color(0xFF00a884)),
-              unselectedLabelStyle: TextStyle(
+              unselectedLabelStyle: const TextStyle(
                   color: Color(
                       0xFF849098) // Set the permanent color for unselected tabs
                   ),
               indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Color(0xFF00a884),
+              indicatorColor: const Color(0xFF00a884),
               indicatorWeight: 3,
-              tabs: [
+              tabs: const [
                 Tab(icon: Icon(Icons.groups_rounded)),
                 Tab(
-                  child: Row(
-                    children: [
-                      Text('Chats'),
-                      SizedBox(width: 8),
-                      CircleAvatar(
-                        radius: 10,
-                        backgroundColor: Color(0xFF00a884),
-                        child: Center(
-                          child: Text(
-                            '2',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 13),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text('Chats'),
+                        SizedBox(width: 8),
+                        CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Color(0xFF00a884),
+                          child: Center(
+                            child: Text(
+                              '2',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 13),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Tab(text: "Updates"),
@@ -131,6 +206,7 @@ class _ChatThreadState extends State<ChatThread> {
                     AppBar().preferredSize.height -
                     40),
             child: TabBarView(
+              controller: gController.tabController,
               children: [
                 const Center(
                   child: Text(
@@ -156,162 +232,164 @@ class _ChatThreadState extends State<ChatThread> {
                         );
                       }),
                 ),
-                Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    ListTile(
-                      leading: const Text(
-                        "Status",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18),
-                      ),
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: SvgPicture.asset('asset/svg/Group 42.svg'),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 60,
-                      child: ListView.builder(
-                        itemCount: listData.length,
-                        controller: _controller1,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 0) {
-                            return Stack(children: [
-                              CircleAvatar(
-                                radius: 45,
-                                foregroundImage:
-                                    NetworkImage(listData[index].url),
-                              ),
-                              const Positioned(
-                                  bottom: 0,
-                                  right: 10,
-                                  child: CircleAvatar(
-                                    backgroundColor: Color(0xFF00a884),
-                                    radius: 12,
-                                    child: Center(
-                                        child: Icon(
-                                      Icons.add_rounded,
-                                      color: Colors.white,
-                                    )),
-                                  ))
-                            ]);
-                          } else {
-                            // Normal avatar for the rest of the indices
-                            return DottedBorder(
-                              color: const Color(0xFF00a884),
-                              borderType: BorderType.Circle,
-                              radius: const Radius.circular(27),
-                              dashPattern: [
-                                (2 * pi * 27) / listData[index].dash,
-                                listData[index].space
-                              ],
-                              strokeWidth: 3,
-                              child: CircleAvatar(
-                                radius: 35,
-                                foregroundImage:
-                                    NetworkImage(listData[index].url),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 30,
-                      child: ListView.builder(
-                        controller: _controller2,
-                        itemCount: listData.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 0) {
-                            return const Padding(
-                              padding: EdgeInsets.only(left: 18.0, right: 15),
-                              child: Text(
-                                'My status',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            );
-                          } else {
-                            // Normal avatar for the rest of the indices
-                            return const Padding(
-                              padding: EdgeInsets.only(left: 12.0, right: 7),
-                              child: Text('My status',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12)),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    const Divider(height: 2),
-                    const SizedBox(height: 6),
-                    const ListTile(
-                      leading: Text(
-                        "Channels",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18),
-                      ),
-                      trailing: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const ChannelContainer(),
-                    const ChannelContainer(),
-                    ListTile(
-                      leading: const Text(
-                        "Find channels",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18),
-                      ),
-                      trailing: Container(
-                        // color: Colors.red,
-                        height: 30,
-                        width: 80,
-                        child: const Row(
-                          children: [
-                            Text(
-                              'See all',
-                              style: TextStyle(
-                                  color: Color(0xFF00a884), fontSize: 13),
-                            ),
-                            SizedBox(width: 6),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: Color(0xFF00a884),
-                            ),
-                          ],
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      ListTile(
+                        leading: const Text(
+                          "Status",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: SvgPicture.asset('asset/svg/Group 42.svg'),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: SizedBox(
-                        height: 140,
-                        width: double.infinity,
-                        child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, i) {
-                              return const NewChannelContainer();
-                            },
-                            separatorBuilder: (ctx, i) {
-                              return const SizedBox(width: 10);
-                            },
-                            itemCount: 10),
+                      SizedBox(
+                        height: 60,
+                        child: ListView.builder(
+                          itemCount: listData.length,
+                          controller: gController._controller1,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              return Stack(children: [
+                                CircleAvatar(
+                                  radius: 45,
+                                  foregroundImage:
+                                      NetworkImage(listData[index].url),
+                                ),
+                                const Positioned(
+                                    bottom: 0,
+                                    right: 10,
+                                    child: CircleAvatar(
+                                      backgroundColor: Color(0xFF00a884),
+                                      radius: 12,
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.add_rounded,
+                                        color: Colors.white,
+                                      )),
+                                    ))
+                              ]);
+                            } else {
+                              // Normal avatar for the rest of the indices
+                              return DottedBorder(
+                                color: const Color(0xFF00a884),
+                                borderType: BorderType.Circle,
+                                radius: const Radius.circular(27),
+                                dashPattern: [
+                                  (2 * pi * 27) / listData[index].dash,
+                                  listData[index].space
+                                ],
+                                strokeWidth: 3,
+                                child: CircleAvatar(
+                                  radius: 35,
+                                  foregroundImage:
+                                      NetworkImage(listData[index].url),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 30,
+                        child: ListView.builder(
+                          controller: gController._controller2,
+                          itemCount: listData.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              return const Padding(
+                                padding: EdgeInsets.only(left: 18.0, right: 15),
+                                child: Text(
+                                  'My status',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              );
+                            } else {
+                              // Normal avatar for the rest of the indices
+                              return const Padding(
+                                padding: EdgeInsets.only(left: 12.0, right: 7),
+                                child: Text('My status',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12)),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      const Divider(height: 2),
+                      const SizedBox(height: 6),
+                      const ListTile(
+                        leading: Text(
+                          "Channels",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        trailing: Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const ChannelContainer(),
+                      const ChannelContainer(),
+                      const ListTile(
+                        leading: Text(
+                          "Find channels",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        trailing: SizedBox(
+                          // color: Colors.red,
+                          height: 30,
+                          width: 80,
+                          child: Row(
+                            children: [
+                              Text(
+                                'See all',
+                                style: TextStyle(
+                                    color: Color(0xFF00a884), fontSize: 13),
+                              ),
+                              SizedBox(width: 6),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Color(0xFF00a884),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: SizedBox(
+                          height: 140,
+                          width: double.infinity,
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (ctx, i) {
+                                return const NewChannelContainer();
+                              },
+                              separatorBuilder: (ctx, i) {
+                                return const SizedBox(width: 10);
+                              },
+                              itemCount: 10),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 ListView.builder(
                   itemCount: listData.length,
@@ -531,27 +609,24 @@ class _ChatThreadState extends State<ChatThread> {
 }
 
 class FloatingButton extends StatelessWidget {
-  final TabControllerGetX tabController = Get.find();
+  final TabController tabController;
+
   final onTap;
 
-   FloatingButton({super.key, this.onTap});
+  const FloatingButton({super.key, this.onTap, required this.tabController});
 
-
-    @override
-    Widget build(BuildContext context) {
-      return Obx(() {
-        return FloatingActionButton(
-          onPressed: onTap,
-          // child: Icon(Icons.ac_unit),
-          child: _getIcon(context),
-        );
-      });
-    }
-
+  @override
+  Widget build(BuildContext context) {
+    print(tabController.index);
+    return FloatingActionButton(
+      onPressed: onTap,
+      // child: Icon(Icons.ac_unit),
+      child: _getIcon(context),
+    );
+  }
 
   Widget _getIcon(BuildContext context) {
-
-    switch (tabController.currentIndex.value) {
+    switch (tabController.index) {
       case 0:
         return const SizedBox();
       case 1:
@@ -568,6 +643,7 @@ class FloatingButton extends StatelessWidget {
         );
       case 2:
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: 40,
@@ -581,10 +657,10 @@ class FloatingButton extends StatelessWidget {
                 color: Color(0xFFd3d7da),
               ),
             ),
-            const SizedBox(height: 18),
+            // const SizedBox(height: 18),
             Container(
-              height: 52,
-              width: 52,
+              height: 40,
+              width: 40,
               decoration: BoxDecoration(
                 color: const Color(0xFF00a884),
                 borderRadius: BorderRadius.circular(15),
@@ -597,8 +673,8 @@ class FloatingButton extends StatelessWidget {
         );
       default:
         return Container(
-          height: 52,
-          width: 52,
+          height: 30,
+          width: 30,
           decoration: BoxDecoration(
             color: const Color(0xFF00a884),
             borderRadius: BorderRadius.circular(15),
