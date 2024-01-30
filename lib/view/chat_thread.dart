@@ -6,11 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:untitled/components/calls_list_tile.dart';
-import 'package:untitled/model/conversations.dart';
-
 import '../components/channel_container.dart';
 import '../components/list_tile.dart';
 import '../components/new_channel_container.dart';
+import '../models/conversations.dart';
 import '../test_example_code.dart';
 
 class MyController extends GetxController
