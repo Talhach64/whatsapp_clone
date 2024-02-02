@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/view/chat_thread.dart';
-import 'test_example_code.dart';
+import 'package:untitled/resources/getx_localization/languages.dart';
+import 'package:untitled/resources/routes/routes.dart';
 
 void main() {
   runApp(
     GetMaterialApp(
-      initialRoute: '/ChatThread',
-      getPages: [
-        GetPage(name: '/ChatThread', page: () => const ChatThread()),
-        GetPage(name: '/Demo', page: () => const Demo()),
-      ],
+      // initialRoute: '/ChatThread',
+      translations: Languages(),
+      locale: const Locale('en','US'),
+      fallbackLocale: const Locale('en','US'),
+      getPages: AppRoute.appRoutes(),
     ),
   );
 }
