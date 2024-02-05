@@ -26,6 +26,7 @@ class _DemoState extends State<Demo> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(title: const Text("Slider Example with Getx"),),
         body: Column(
           children: [
             const SizedBox(height: 20),

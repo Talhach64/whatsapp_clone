@@ -10,19 +10,19 @@ class AppData {
   static const _accessToken = 'AccessToken';
   static const _personID = 'PersonID';
 
-  Future<void> setAccessToken(String token) async {
+  static Future<void> setAccessToken(String token) async {
     await _preferences.setString(_accessToken, token);
   }
 
-  String getAccessToken() {
+  static String getAccessToken() {
     return _preferences.getString(_accessToken) ?? '';
   }
 
-  Future<void> setPersonID(String token) async {
+  static Future<void> setPersonID(String token) async {
     await _preferences.setString(_personID, token);
   }
 
-  String getPersonID() {
+  static String getPersonID() {
     return _preferences.getString(_personID) ?? '';
   }
 
