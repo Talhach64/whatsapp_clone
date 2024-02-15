@@ -2,16 +2,19 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../app_exceptions.dart';
-import '../shared_data.dart';
+import '../../view_models/controller/user_preference/user_preference_view_model.dart';
 import 'base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
   final Dio _dio = Dio();
+  UserPreference userPreference = UserPreference();
 
   @override
   Future<dynamic> getApi(String url) async {
-    String accessToken = AppData.getAccessToken();
+    String? accessToken;
     dynamic response;
+
+    userPreference.getUser().then((value) => {accessToken = value.token});
 
     if (kDebugMode) {
       print(url);
@@ -48,8 +51,10 @@ class NetworkApiServices extends BaseApiServices {
 
   @override
   Future<List<dynamic>> getListApi(String url) async {
-    String accessToken = AppData.getAccessToken();
-    List<dynamic> response;
+    String? accessToken;
+    dynamic response;
+
+    userPreference.getUser().then((value) => {accessToken = value.token});
 
     if (kDebugMode) {
       print(url);
@@ -122,8 +127,9 @@ class NetworkApiServices extends BaseApiServices {
 
   @override
   Future<dynamic> patchApi(dynamic data, String url) async {
-    String accessToken = AppData.getAccessToken();
+    String? accessToken;
     dynamic response;
+    userPreference.getUser().then((value) => {accessToken = value.token});
 
     if (kDebugMode) {
       print(url);
@@ -160,8 +166,9 @@ class NetworkApiServices extends BaseApiServices {
 
   @override
   Future<dynamic> deleteApi(String url) async {
-    String accessToken = AppData.getAccessToken();
+    String? accessToken;
     dynamic response;
+    userPreference.getUser().then((value) => {accessToken = value.token});
 
     if (kDebugMode) {
       print(url);
